@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechUni — Red de Servicios Técnicos Universitarios</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --gold: #f59e0b;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --border: rgba(59,130,246,0.15);
+    --glow: rgba(59,130,246,0.3);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 5%;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .btn-nav {
+    background: var(--accent);
+    color: white !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s !important;
+  }
+
+  .btn-nav:hover {
+    background: #2563eb !important;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.4);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 5% 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(59,130,246,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(6,182,212,0.08) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 680px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    max-width: 540px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #2563eb);
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(59,130,246,0.35);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(59,130,246,0.5);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-stats {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(59,130,246,0.2);
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.25rem;
+  }
+
+  /* SERVICIOS */
+  section {
+    padding: 6rem 5%;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .section-sub {
+    color: #64748b;
+    font-size: 1.05rem;
+    max-width: 540px;
+    font-weight: 300;
+    margin-bottom: 3.5rem;
+    line-height: 1.7;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .service-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .service-card:hover {
+    border-color: rgba(59,130,246,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(59,130,246,0.15);
+  }
+
+  .service-card:hover::before { opacity: 1; }
+
+  .service-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .icon-blue { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.2); }
+  .icon-cyan { background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.2); }
+  .icon-gold { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.2); }
+
+  .service-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .service-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .service-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .price-from {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent2);
+  }
+
+  .service-btn {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--accent);
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .service-btn:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* REPUTACION */
+  .reputation-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rep-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .rep-visual {
+    position: relative;
+  }
+
+  .id-card {
+    background: linear-gradient(135deg, #1e3a5f, #0f2340);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.1);
+  }
+
+  .id-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(59,130,246,0.2), transparent);
+    border-radius: 50%;
+  }
+
+  .id-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .id-avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .id-info h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .id-info p {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 0.2rem;
+  }
+
+  .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(34,197,94,0.15);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: #4ade80;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+    letter-spacing: 0.04em;
+  }
+
+  .id-stats {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .id-stat {
+    text-align: center;
+  }
+
+  .id-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent2);
+  }
+
+  .id-stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+  }
+
+  .id-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.75rem;
+    color: #93c5fd;
+  }
+
+  .floating-review {
+    position: absolute;
+    right: -30px;
+    top: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    width: 180px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .review-stars { font-size: 0.75rem; color: var(--gold); margin-bottom: 0.4rem; }
+  .review-text { font-size: 0.78rem; color: #94a3b8; line-height: 1.4; }
+  .review-author { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; }
+
+  .rep-content h2 {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    line-height: 1.15;
+  }
+
+  .rep-content p {
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .rep-features {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rep-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .rep-feature-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .rep-feature-text h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .rep-feature-text p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* SIMULADOR */
+  .simulator-section {
+    background: var(--bg);
+  }
+
+  .sim-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+  }
+
+  .sim-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .sim-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .sim-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #ef4444; }
+  .dot-y { background: #f59e0b; }
+  .dot-g { background: #22c55e; }
+
+  .sim-title {
+    font-size: 0.85rem;
+    color: var(--muted);
+    flex: 1;
+    text-align: center;
+    font-family: 'DM Sans', monospace;
+  }
+
+  .sim-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+  }
+
+  .sim-left {
+    padding: 2rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .sim-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-num.done {
+    background: #22c55e;
+  }
+
+  .step-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .sim-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sim-select, .sim-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .sim-select:focus, .sim-input:focus {
+    border-color: var(--accent);
+  }
+
+  .sim-select option { background: var(--surface2); }
+
+  .sim-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sim-submit {
+    background: linear-gradient(135deg, var(--accent), #2563eb);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .sim-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.4);
+  }
+
+  .sim-right {
+    padding: 2rem;
+  }
+
+  .sim-right h3 {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .provider-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .provider-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .provider-item:hover {
+    border-color: rgba(59,130,246,0.5);
+    background: rgba(59,130,246,0.05);
+  }
+
+  .provider-item.selected {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.08);
+  }
+
+  .prov-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .prov-info { flex: 1; }
+
+  .prov-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+  }
+
+  .prov-detail {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .prov-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .prov-rating {
+    font-size: 0.72rem;
+    color: var(--gold);
+  }
+
+  /* CONFIRM MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 440px;
+    width: 90%;
+    text-align: center;
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(34,197,94,0.15);
+    border: 2px solid rgba(34,197,94,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  .modal h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .modal p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .modal-detail {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+
+  .modal-row:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-row span:first-child { color: var(--muted); }
+  .modal-row span:last-child { font-weight: 600; }
+
+  .modal-total {
+    color: var(--accent2) !important;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem !important;
+  }
+
+  .modal-close {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { background: #2563eb; }
+
+  /* COSTOS */
+  .costos-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .costs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .cost-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cost-card.featured {
+    border-color: rgba(59,130,246,0.5);
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), var(--bg));
+  }
+
+  .cost-card.featured::before {
+    content: 'Esencial';
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: var(--accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cost-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .cost-category {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .cost-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .cost-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cost-items li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .cost-items li span:last-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .cost-total {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cost-total-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .cost-total-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent2);
+  }
+
+  .grand-total {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(6,182,212,0.05));
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .grand-total-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .grand-total-info p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .grand-total-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 5%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(59,130,246,0.1), transparent 60%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 5% 2rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+    max-width: 260px;
+  }
+
+  .footer-col h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-col ul li a {
+    color: #475569;
+    font-size: 0.88rem;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul li a:hover { color: var(--text); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .footer-badges {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .footer-badge {
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 6px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    color: #93c5fd;
+    font-weight: 500;
+  }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-stats { display: none; }
+    .rep-grid { grid-template-columns: 1fr; }
+    .floating-review { display: none; }
+    .sim-body { grid-template-columns: 1fr; }
+    .sim-left { border-right: none; border-bottom: 1px solid var(--border); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 4%; }
+    .nav-links { display: none; }
+    section { padding: 4rem 5%; }
+    .hero { padding: 6rem 5% 4rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .sim-body { min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    TechUni
+  </div>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#reputacion">Reputación</a></li>
+    <li><a href="#simular">Contratar</a></li>
+    <li><a href="#costos">Inversión</a></li>
+    <li><a href="#simular" class="btn-nav">Iniciar ahora</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      🎓 Red universitaria exclusiva · Carné verificado
+    </div>
+    <h1>Servicios técnicos entre <span>universitarios confiables</span></h1>
+    <p>La plataforma que conecta a estudiantes que necesitan soporte técnico con expertos de su mismo campus. Reparaciones, tutorías y soporte verificado con sistema de reputación por carné universitario.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('simular').scrollIntoView({behavior:'smooth'})">
+        Simular contratación →
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('servicios').scrollIntoView({behavior:'smooth'})">
+        Ver servicios
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-card">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Calificación promedio</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Proveedores activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Carné verificado</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="reveal">
+    <span class="section-tag">🔧 Catálogo de servicios</span>
+    <h2 class="section-title">Todo lo que tu campus necesita</h2>
+    <p class="section-sub">Encuentra expertos certificados por el carné universitario para resolver cualquier problema técnico o académico.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon icon-blue">💻</div>
+      <h3>Reparación de Computadoras</h3>
+      <p>Diagnóstico, reparación de hardware, limpieza, reemplazo de piezas y recuperación de datos. Servicio a domicilio en campus.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 50</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Reparación de Computadora')">Contratar</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon icon-cyan">⚙️</div>
+      <h3>Instalación de Software</h3>
+      <p>Windows, Linux, Office, software especializado para carreras. Instalación limpia, configuración y licencias académicas.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 35</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Instalación de Software')">Contratar</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon icon-gold">📚</div>
+      <h3>Tutorías de Programación</h3>
+      <p>Python, Java, C++, JavaScript, bases de datos y más. Aprende con estudiantes avanzados de Ingeniería en Sistemas.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 40/hr</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Tutoría de Programación')">Contratar</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon icon-blue">🔒</div>
+      <h3>Ciberseguridad Básica</h3>
+      <p>Configuración de antivirus, limpieza de malware, VPN universitaria, y buenas prácticas de seguridad digital.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 45</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Ciberseguridad')">Contratar</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon icon-cyan">🌐</div>
+      <h3>Redes y Conectividad</h3>
+      <p>Configuración de routers, redes locales, acceso a red universitaria y solución de problemas de conectividad.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 60</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Redes y Conectividad')">Contratar</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-icon icon-gold">🎨</div>
+      <h3>Diseño y Presentaciones</h3>
+      <p>PowerPoint profesional, Canva, diseño gráfico básico e infografías para proyectos universitarios.</p>
+      <div class="service-price">
+        <div>
+          <div class="price-from">Desde</div>
+          <div class="price-amount">Q 30</div>
+        </div>
+        <button class="service-btn" onclick="openSimulator('Diseño y Presentaciones')">Contratar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPUTACION -->
+<section class="reputation-section" id="reputacion">
+  <div class="rep-grid">
+    <div class="rep-visual reveal">
+      <div class="id-card">
+        <div class="id-header">
+          <div class="id-avatar">JM</div>
+          <div class="id-info">
+            <h4>Juan M. Pérez</h4>
+            <p>Carné: 202001234 · USAC</p>
+            <div class="verified-badge">✓ Verificado</div>
+          </div>
+        </div>
+        <div class="id-stats">
+          <div class="id-stat">
+            <div class="id-stat-num">47</div>
+            <div class="id-stat-label">Servicios</div>
+          </div>
+          <div class="id-stat">
+            <div class="id-stat-num">4.9</div>
+            <div class="id-stat-label">Rating</div>
+          </div>
+          <div class="id-stat">
+            <div class="id-stat-num">2yr</div>
+            <div class="id-stat-label">Activo</div>
+          </div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p style="font-size:0.78rem;color:#64748b;margin:0.4rem 0 1.2rem;">"Excelente trabajo, muy puntual y profesional"</p>
+        <div class="id-skills">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Hardware</span>
+          <span class="skill-tag">Redes</span>
+          <span class="skill-tag">Linux</span>
+        </div>
+      </div>
+
+      <div class="floating-review">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Reparó mi laptop en 2 horas. Muy profesional.</div>
+        <div class="review-author">— María G. · 201905678</div>
+      </div>
+    </div>
+
+    <div class="rep-content reveal">
+      <span class="section-tag">🎓 Sistema de reputación</span>
+      <h2>Confianza respaldada por el carné universitario</h2>
+      <p>Nuestra innovación clave: cada proveedor es verificado con su número de carné universitario activo. Cero perfiles falsos, cero estafas. Solo compañeros de campus con historial académico real.</p>
+
+      <div class="rep-features">
+        <div class="rep-feature">
+          <div class="rep-feature-icon">🆔</div>
+          <div class="rep-feature-text">
+            <h4>Verificación por carné</h4>
+            <p>Solo estudiantes activos con carné universitario válido pueden ofrecer servicios en la plataforma.</p>
+          </div>
+        </div>
+        <div class="rep-feature">
+          <div class="rep-feature-icon">⭐</div>
+          <div class="rep-feature-text">
+            <h4>Sistema de calificaciones</h4>
+            <p>Cada servicio genera una reseña verificada. La reputación se construye con cada trabajo completado.</p>
+          </div>
+        </div>
+        <div class="rep-feature">
+          <div class="rep-feature-icon">🛡️</div>
+          <div class="rep-feature-text">
+            <h4>Pago seguro en escrow</h4>
+            <p>El pago se libera solo cuando el cliente confirma que el trabajo fue completado satisfactoriamente.</p>
+          </div>
+        </div>
+        <div class="rep-feature">
+          <div class="rep-feature-icon">📊</div>
+          <div class="rep-feature-text">
+            <h4>Historial transparente</h4>
+            <p>Todos los servicios, calificaciones y comentarios son visibles. Sin opción de eliminar reseñas negativas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIMULADOR -->
+<section class="simulator-section" id="simular">
+  <div style="text-align:center" class="reveal">
+    <span class="section-tag">⚡ Prototipo funcional</span>
+    <h2 class="section-title">Simula una contratación real</h2>
+    <p class="section-sub" style="margin:0 auto 3rem;">Experimenta el flujo completo de contratar un servicio técnico universitario. Así funcionará TechUni en producción.</p>
+  </div>
+
+  <div class="sim-container reveal">
+    <div class="sim-header">
+      <div class="sim-dots">
+        <div class="sim-dot dot-r"></div>
+        <div class="sim-dot dot-y"></div>
+        <div class="sim-dot dot-g"></div>
+      </div>
+      <div class="sim-title">techuni.gt — Contratar servicio</div>
+    </div>
+
+    <div class="sim-body">
+      <div class="sim-left">
+        <div class="sim-step">
+          <div class="step-num done">1</div>
+          <div class="step-label">Selecciona el servicio</div>
+        </div>
+        <div class="sim-step">
+          <div class="step-num" id="step2">2</div>
+          <div class="step-label">Elige al proveedor</div>
+        </div>
+        <div class="sim-step">
+          <div class="step-num" id="step3">3</div>
+          <div class="step-label">Confirma y paga</div>
+        </div>
+
+        <div class="sim-form">
+          <div class="field-group">
+            <div class="sim-label">Tipo de servicio</div>
+            <select class="sim-select" id="serviceSelect" onchange="updateProviders()">
+              <option value="">— Selecciona servicio —</option>
+              <option value="Reparación de Computadora">Reparación de Computadora</option>
+              <option value="Instalación de Software">Instalación de Software</option>
+              <option value="Tutoría de Programación">Tutoría de Programación</option>
+              <option value="Ciberseguridad">Ciberseguridad</option>
+              <option value="Redes y Conectividad">Redes y Conectividad</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="sim-label">Tu carné universitario</div>
+            <input type="text" class="sim-input" placeholder="Ej: 202001234" id="carneInput">
+          </div>
+          <div class="field-group">
+            <div class="sim-label">Descripción del problema</div>
+            <input type="text" class="sim-input" placeholder="Describe brevemente lo que necesitas" id="descInput">
+          </div>
+          <button class="sim-submit" onclick="confirmService()">Confirmar contratación →</button>
+        </div>
+      </div>
+
+      <div class="sim-right">
+        <h3 id="providers-title">Selecciona un servicio para ver proveedores disponibles</h3>
+        <div class="provider-list" id="providerList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COSTOS -->
+<section class="costos-section" id="costos">
+  <div class="reveal">
+    <span class="section-tag">💰 Estructura de costos</span>
+    <h2 class="section-title">Inversión para lanzar TechUni</h2>
+    <p class="section-sub">Presupuesto detallado para llevar la plataforma a producción en el primer año de operaciones.</p>
+  </div>
+
+  <div class="costs-grid">
+    <div class="cost-card featured reveal">
+      <div class="cost-icon">🌐</div>
+      <div class="cost-category">Infraestructura</div>
+      <div class="cost-title">Dominio & Hosting</div>
+      <ul class="cost-items">
+        <li><span>Dominio .gt (techuni.gt)</span><span>Q 300/año</span></li>
+        <li><span>Hosting VPS inicial</span><span>Q 600/año</span></li>
+        <li><span>SSL Certificate</span><span>Q 0 (Let's Encrypt)</span></li>
+        <li><span>CDN (Cloudflare Free)</span><span>Q 0</span></li>
+      </ul>
+      <div class="cost-total">
+        <span class="cost-total-label">Total Año 1</span>
+        <span class="cost-total-amount">Q 900</span>
+      </div>
+    </div>
+
+    <div class="cost-card reveal">
+      <div class="cost-icon">🗄️</div>
+      <div class="cost-category">Tecnología</div>
+      <div class="cost-title">Base de Datos & Backend</div>
+      <ul class="cost-items">
+        <li><span>PostgreSQL (Railway)</span><span>Q 200/mes</span></li>
+        <li><span>Autenticación (Supabase)</span><span>Q 0 (Free)</span></li>
+        <li><span>Almacenamiento imágenes</span><span>Q 80/mes</span></li>
+        <li><span>Pasarela de pagos</span><span>3.5% por trans.</span></li>
+      </ul>
+      <div class="cost-total">
+        <span class="cost-total-label">Total Año 1</span>
+        <span class="cost-total-amount">Q 3,360</span>
+      </div>
+    </div>
+
+    <div class="cost-card reveal">
+      <div class="cost-icon">📣</div>
+      <div class="cost-category">Crecimiento</div>
+      <div class="cost-title">Marketing Digital</div>
+      <ul class="cost-items">
+        <li><span>Meta Ads (campus target)</span><span>Q 800/mes</span></li>
+        <li><span>Material impreso campus</span><span>Q 400 único</span></li>
+        <li><span>Influencers universitarios</span><span>Q 300/mes</span></li>
+        <li><span>Diseño gráfico</span><span>Q 500 único</span></li>
+      </ul>
+      <div class="cost-total">
+        <span class="cost-total-label">Total Año 1</span>
+        <span class="cost-total-amount">Q 14,500</span>
+      </div>
+    </div>
+
+    <div class="cost-card reveal">
+      <div class="cost-icon">⚖️</div>
+      <div class="cost-category">Legal & Operación</div>
+      <div class="cost-title">Estructura Legal</div>
+      <ul class="cost-items">
+        <li><span>Registro mercantil</span><span>Q 800 único</span></li>
+        <li><span>Asesoría legal inicial</span><span>Q 1,200 único</span></li>
+        <li><span>Herramientas SaaS</span><span>Q 200/mes</span></li>
+        <li><span>Contingencias (10%)</span><span>Q 2,200</span></li>
+      </ul>
+      <div class="cost-total">
+        <span class="cost-total-label">Total Año 1</span>
+        <span class="cost-total-amount">Q 6,600</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grand-total reveal">
+    <div class="grand-total-info">
+      <h3>Inversión total — Año 1</h3>
+      <p>Incluye infraestructura, tecnología, marketing y operaciones. Modelo con comisión del 15% por servicio generará ROI desde el mes 6.</p>
+    </div>
+    <div class="grand-total-amount">Q 25,360</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <span class="section-tag reveal">🚀 ¿Listo para lanzar?</span>
+  <h2 class="reveal">El campus te está esperando</h2>
+  <p class="reveal">Únete como fundador, proveedor o inversionista y sé parte del primer marketplace de servicios técnicos universitarios de Guatemala.</p>
+  <div class="cta-actions reveal">
+    <button class="btn-primary" onclick="document.getElementById('simular').scrollIntoView({behavior:'smooth'})">
+      Probar la plataforma
+    </button>
+    <button class="btn-secondary">Contactar al equipo</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">
+        <div class="logo-dot"></div>
+        TechUni
+      </div>
+      <p>Red exclusiva de servicios técnicos universitarios. Conectamos talento estudiantil con quienes más lo necesitan, de forma segura y verificada.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#">Reparación</a></li>
+        <li><a href="#">Software</a></li>
+        <li><a href="#">Tutorías</a></li>
+        <li><a href="#">Redes</a></li>
+        <li><a href="#">Diseño</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Plataforma</h4>
+      <ul>
+        <li><a href="#">Cómo funciona</a></li>
+        <li><a href="#">Ser proveedor</a></li>
+        <li><a href="#">Sistema de pago</a></li>
+        <li><a href="#">Reputación</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <ul>
+        <li><a href="#">Acerca de</a></li>
+        <li><a href="#">Inversionistas</a></li>
+        <li><a href="#">Contacto</a></li>
+        <li><a href="#">Términos</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TechUni · Guatemala · Todos los derechos reservados</p>
+    <div class="footer-badges">
+      <span class="footer-badge">🔒 SSL Seguro</span>
+      <span class="footer-badge">🎓 Verificado USAC</span>
+      <span class="footer-badge">🇬🇹 Hecho en GT</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-icon">✅</div>
+    <h3>¡Servicio confirmado!</h3>
+    <p>Tu solicitud fue enviada al proveedor. Recibirás confirmación en los próximos 15 minutos vía notificación.</p>
+    <div class="modal-detail" id="modalDetail"></div>
+    <button class="modal-close" onclick="closeModal()">Ver mis solicitudes</button>
+  </div>
+</div>
+
+<script>
+const providers = {
+  'Reparación de Computadora': [
+    { initials: 'JM', name: 'Juan M. Pérez', carne: '202001234', rating: '4.9 ★★★★★', specialty: 'Hardware · 47 servicios', price: 'Q 75', color: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' },
+    { initials: 'AC', name: 'Ana C. López', carne: '201808923', rating: '4.8 ★★★★★', specialty: 'Laptop/PC · 31 servicios', price: 'Q 65', color: 'linear-gradient(135deg,#06b6d4,#0284c7)' },
+    { initials: 'RG', name: 'Roberto G.', carne: '202112456', rating: '4.7 ★★★★★', specialty: 'Mac/Windows · 19 servicios', price: 'Q 80', color: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' },
+  ],
+  'Instalación de Software': [
+    { initials: 'MF', name: 'María F. Ruiz', carne: '202003341', rating: '5.0 ★★★★★', specialty: 'Windows/Linux · 55 servicios', price: 'Q 40', color: 'linear-gradient(135deg,#10b981,#059669)' },
+    { initials: 'DC', name: 'Diego C. Morales', carne: '201901122', rating: '4.9 ★★★★★', specialty: 'Software académico · 38 servicios', price: 'Q 35', color: 'linear-gradient(135deg,#f59e0b,#d97706)' },
+  ],
+  'Tutoría de Programación': [
+    { initials: 'LH', name: 'Luis H. García', carne: '201811000', rating: '4.9 ★★★★★', specialty: 'Python · Java · 62 sesiones', price: 'Q 50/hr', color: 'linear-gradient(135deg,#ef4444,#dc2626)' },
+    { initials: 'SM', name: 'Sandra M. Paz', carne: '202004567', rating: '5.0 ★★★★★', specialty: 'C++ · Algoritmos · 44 sesiones', price: 'Q 45/hr', color: 'linear-gradient(135deg,#8b5cf6,#7c3aed)' },
+    { initials: 'PL', name: 'Pablo L. Torres', carne: '201703890', rating: '4.8 ★★★★★', specialty: 'Web · JS · React · 71 sesiones', price: 'Q 55/hr', color: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
+  ],
+  'Ciberseguridad': [
+    { initials: 'KA', name: 'Karen A. Soto', carne: '202105678', rating: '4.9 ★★★★★', specialty: 'Antivirus · Malware · 23 servicios', price: 'Q 55', color: 'linear-gradient(135deg,#10b981,#047857)' },
+  ],
+  'Redes y Conectividad': [
+    { initials: 'EN', name: 'Ernesto N. Fuentes', carne: '201812345', rating: '4.8 ★★★★★', specialty: 'Router · LAN · 34 servicios', price: 'Q 70', color: 'linear-gradient(135deg,#3b82f6,#2563eb)' },
+    { initials: 'YB', name: 'Yolanda B. Cruz', carne: '202009012', rating: '4.7 ★★★★★', specialty: 'WiFi · Campus net · 18 servicios', price: 'Q 60', color: 'linear-gradient(135deg,#f59e0b,#b45309)' },
+  ]
+};
+
+let selectedProvider = null;
+
+function updateProviders() {
+  const sel = document.getElementById('serviceSelect').value;
+  const list = document.getElementById('providerList');
+  const title = document.getElementById('providers-title');
+  document.getElementById('step2').style.background = 'var(--accent)';
+
+  if (!sel || !providers[sel]) {
+    title.textContent = 'Selecciona un servicio para ver proveedores disponibles';
+    list.innerHTML = '';
+    return;
+  }
+
+  title.textContent = `Proveedores disponibles para "${sel}"`;
+  selectedProvider = null;
+
+  list.innerHTML = providers[sel].map((p, i) => `
+    <div class="provider-item" id="prov-${i}" onclick="selectProvider(${i}, '${sel}')">
+      <div class="prov-avatar" style="background:${p.color}">${p.initials}</div>
+      <div class="prov-info">
+        <div class="prov-name">${p.name}</div>
+        <div class="prov-detail">Carné: ${p.carne}</div>
+        <div class="prov-rating">${p.rating}</div>
+        <div class="prov-detail">${p.specialty}</div>
+      </div>
+      <div class="prov-price">${p.price}</div>
+    </div>
+  `).join('');
+}
+
+function selectProvider(i, service) {
+  document.querySelectorAll('.provider-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`prov-${i}`).classList.add('selected');
+  selectedProvider = providers[service][i];
+  document.getElementById('step3').style.background = 'var(--accent)';
+}
+
+function openSimulator(service) {
+  document.getElementById('simular').scrollIntoView({behavior:'smooth'});
+  setTimeout(() => {
+    document.getElementById('serviceSelect').value = service;
+    updateProviders();
+  }, 600);
+}
+
+function confirmService() {
+  const service = document.getElementById('serviceSelect').value;
+  const carne = document.getElementById('carneInput').value;
+  const desc = document.getElementById('descInput').value;
+
+  if (!service) { alert('Por favor selecciona un tipo de servicio.'); return; }
+  if (!carne) { alert('Por favor ingresa tu carné universitario.'); return; }
+  if (!selectedProvider) { alert('Por favor selecciona un proveedor de la lista.'); return; }
+
+  document.getElementById('modalDetail').innerHTML = `
+    <div class="modal-row"><span>Servicio</span><span>${service}</span></div>
+    <div class="modal-row"><span>Proveedor</span><span>${selectedProvider.name}</span></div>
+    <div class="modal-row"><span>Carné proveedor</span><span>${selectedProvider.carne} ✓</span></div>
+    <div class="modal-row"><span>Tu carné</span><span>${carne}</span></div>
+    <div class="modal-row"><span class="modal-total">Total estimado</span><span class="modal-total">${selectedProvider.price}</span></div>
+  `;
+
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('active');
+}
+
+document.getElementById('confirmModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(el => {
+    if (el.isIntersecting) {
+      el.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
